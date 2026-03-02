@@ -71,19 +71,19 @@ uv run python build.py
 
 The `dist/` folder will be assembled with:
 
-- `MyApp.exe` — the launcher (built by PyInstaller, no dependencies bundled)
+- `MyApp.exe` (Windows) or `MyApp` (Linux) — the launcher (built by PyInstaller, no dependencies bundled)
 - App source files, `pyproject.toml`, and `uv.lock`
 
 ### 2. Build the installer
 
-Open `installer.iss` in [Inno Setup](https://jrsoftware.org/isinfo.php) and click Build, or run
-from the command line:
-
 ```bash
-iscc installer.iss
+uv run python package.py
 ```
 
-The final `mysetup.exe` installer will be placed in `release/`.
+**Windows** — runs [Inno Setup](https://jrsoftware.org/isinfo.php) via `iscc`
+and places `mysetup.exe` in `release/`.
+
+**Linux** — creates `MyApp.tar.gz` in `release/`.
 
 ## Resources
 
