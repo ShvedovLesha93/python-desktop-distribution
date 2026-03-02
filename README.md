@@ -1,10 +1,14 @@
 # Python Desktop Distribution
 
-A sample `PySide6` application demonstrating how to build cross-platform desktop applications with internationalization (i18n) support using a lightweight `uv`-based bootstrap launcher.
+A sample `PySide6` application demonstrating how to build cross-platform desktop applications
+with internationalization (i18n) support using a lightweight `uv`-based bootstrap launcher.
 
 ## How it works
 
-Instead of bundling all libraries into a large exe, `PyInstaller` only packages a small launcher. On first run, the launcher uses `uv` to download and install all dependencies into a local `.venv` next to the executable. Subsequent launches skip this step entirely. The final installer is built with [Inno Setup](https://jrsoftware.org/isinfo.php).
+Instead of bundling all libraries into a large exe, `PyInstaller` only packages a small launcher.
+On first run, the launcher uses `uv` to download and install all dependencies
+into a local `.venv` next to the executable. Subsequent launches skip this step entirely.
+The final installer is built with [Inno Setup](https://jrsoftware.org/isinfo.php).
 
 ## Features
 
@@ -60,17 +64,21 @@ python main.py
 ## Building
 
 ### 1. Build the launcher and assemble dist
+
 ```bash
 uv run python build.py
 ```
 
 The `dist/` folder will be assembled with:
+
 - `MyApp.exe` — the launcher (built by PyInstaller, no dependencies bundled)
 - App source files, `pyproject.toml`, and `uv.lock`
 
 ### 2. Build the installer
 
-Open `installer.iss` in [Inno Setup](https://jrsoftware.org/isinfo.php) and click Build, or run from the command line:
+Open `installer.iss` in [Inno Setup](https://jrsoftware.org/isinfo.php) and click Build, or run
+from the command line:
+
 ```bash
 iscc installer.iss
 ```
