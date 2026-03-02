@@ -1,7 +1,9 @@
 import io
 import logging
+import platform
 import subprocess
 import sys
+import tarfile
 import urllib.request
 import zipfile
 from pathlib import Path
@@ -17,16 +19,31 @@ logging.basicConfig(
 log = logging.getLogger("launcher")
 
 APP_DIR = Path(sys.executable).parent
-UV = APP_DIR / "uv.exe"
 VENV = APP_DIR / ".venv"
 
-if sys.platform == "win32":
+_system = platform.system()
+_machine = platform.machine().lower()
+
+if _system == "Windows":
+    UV = APP_DIR / "uv.exe"
     PYTHON = VENV / "Scripts" / "python.exe"
 else:
+    UV = APP_DIR / "uv"
     PYTHON = VENV / "bin" / "python"
 
 UV_VERSION = "0.10.4"
-UV_URL = f"https://github.com/astral-sh/uv/releases/download/{UV_VERSION}/uv-x86_64-pc-windows-msvc.zip"
+UV_MIN_SIZE = 5 * 1024 * 1024  # 5 MB
+
+if _system == "Windows":
+    UV_URL = f"https://github.com/astral-sh/uv/releases/download/{UV_VERSION}/uv-x86_64-pc-windows-msvc.zip"
+elif _system == "Linux":
+    _arch = "aarch64" if _machine == "aarch64" else "x86_64"
+    UV_URL = f"https://github.com/astral-sh/uv/releases/download/{UV_VERSION}/uv-{_arch}-unknown-linux-gnu.tar.gz"
+else:
+    raise RuntimeError(f"Unsupported platform: {_system}")
+
+log.debug(f"Platform: {_system}/{_machine}")
+log.debug(f"UV_URL: {UV_URL}")
 
 
 def log_paths():
@@ -36,14 +53,35 @@ def log_paths():
     log.debug(f"PYTHON  : {PYTHON} (exists: {PYTHON.exists()})")
 
 
-def download_uv():
-    log.debug(f"Downloading uv {UV_VERSION}...")
+def download_uv() -> None:
+    log.info(f"Downloading uv {UV_VERSION} from: {UV_URL}")
     with urllib.request.urlopen(UV_URL) as response:
-        zip_data = io.BytesIO(response.read())
-    with zipfile.ZipFile(zip_data) as zf:
-        with zf.open("uv.exe") as src, open("uv.exe", "wb") as dst:
-            dst.write(src.read())
-    log.debug("uv.exe downloaded")
+        data = io.BytesIO(response.read())
+    log.debug(f"Archive downloaded, size: {len(data.getvalue()) / 1024 / 1024:.1f} MB")
+
+    if _system == "Windows":
+        with zipfile.ZipFile(data) as zf:
+            log.debug(f"Archive contents: {zf.namelist()}")
+            with zf.open("uv.exe") as src, open(UV, "wb") as dst:
+                dst.write(src.read())
+    else:
+        with tarfile.open(fileobj=data, mode="r:gz") as tf:
+            log.debug(f"Archive contents: {tf.getnames()}")
+            member = tf.extractfile(f"uv-{_arch}-unknown-linux-gnu/uv")
+            with open(UV, "wb") as dst:
+                dst.write(member.read())
+        UV.chmod(0o755)
+
+    size = UV.stat().st_size
+    log.debug(f"uv written to: {UV} ({size / 1024 / 1024:.1f} MB)")
+
+    if size < UV_MIN_SIZE:
+        UV.unlink()
+        raise RuntimeError(
+            f"uv is suspiciously small ({size} bytes), download may be corrupt. File removed."
+        )
+
+    log.info("uv downloaded successfully")
 
 
 def bootstrap():
