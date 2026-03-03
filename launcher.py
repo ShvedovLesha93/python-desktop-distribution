@@ -8,18 +8,27 @@ import urllib.request
 import zipfile
 from pathlib import Path
 
+import os
 from rich.logging import RichHandler
+
+APP_DIR = Path(sys.executable).resolve().parent
+VENV = APP_DIR / ".venv"
+
+LOG_FILE = APP_DIR / "launcher.log"
 
 logging.basicConfig(
     level=logging.DEBUG,
     format="%(message)s",
     datefmt="[%X]",
-    handlers=[RichHandler(rich_tracebacks=True)],
+    handlers=[
+        RichHandler(rich_tracebacks=True),
+        logging.FileHandler(LOG_FILE, mode="w", encoding="utf-8"),
+    ],
 )
 log = logging.getLogger("launcher")
 
-APP_DIR = Path(sys.executable).parent
-VENV = APP_DIR / ".venv"
+log.debug(f"DISPLAY: {os.environ.get('DISPLAY', 'NOT SET')}")
+log.debug(f"WAYLAND_DISPLAY: {os.environ.get('WAYLAND_DISPLAY', 'NOT SET')}")
 
 _system = platform.system()
 _machine = platform.machine().lower()
@@ -112,16 +121,28 @@ def bootstrap():
         log.info("Virtual environment already exists, skipping bootstrap.")
 
 
+def wait_for_user() -> None:
+    """Pause for the user — gracefully handles no-terminal launches."""
+    try:
+        input("\nPress Enter to close...")
+    except EOFError:
+        pass  # No terminal, just exit
+
+
 def main():
     try:
         log_paths()
         bootstrap()
         log_paths()
         log.info(f"Launching app: {PYTHON} {APP_DIR / 'main.py'}")
-        result = subprocess.run([PYTHON, APP_DIR / "main.py"])
+        result = subprocess.run(
+            [PYTHON, APP_DIR / "main.py"], capture_output=True, text=True
+        )
         if result.returncode != 0:
             log.error(f"App exited with error code: {result.returncode}")
-            input("\nPress Enter to close...")
+            log.error(f"stdout:\n{result.stdout}")
+            log.error(f"stderr:\n{result.stderr}")
+            wait_for_user()
             sys.exit(result.returncode)
     except Exception as e:
         log.exception(f"Launcher error: {e}")

@@ -23,7 +23,7 @@ def collect_files() -> None:
         ignore=shutil.ignore_patterns("__pycache__", "*.po", "*.pot", "*.pyc"),
     )
 
-    for file in ["main.py", "uv.lock", "pyproject.toml"]:
+    for file in ["main.py", "uv.lock", "pyproject.toml", "version.json"]:
         shutil.copy(file, DIST_PATH / file)
 
 
