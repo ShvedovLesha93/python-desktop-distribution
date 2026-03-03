@@ -61,6 +61,58 @@ uv run python main.py
 python main.py
 ```
 
+## Adding New Translations
+
+### 1. Extract translatable strings
+
+```bash
+uv run python i18n_extract.py
+```
+
+### 2. Create or update language files
+
+For a new language (e.g., French):
+
+```bash
+mkdir -p app/locales/fr/LC_MESSAGES
+msginit -i app/locales/messages.pot \
+    -o app/locales/fr/LC_MESSAGES/messages.po \
+    -l fr
+```
+
+For updating existing translations:
+
+```bash
+msgmerge -U app/locales/ru/LC_MESSAGES/messages.po app/locales/messages.pot
+```
+
+### 3. Edit the .po file
+
+Open `app/locales/ru/LC_MESSAGES/messages.po` and add translations:
+
+```po
+msgid "Change language"
+msgstr "Изменить язык"
+
+msgid "Language changed to: {lang}"
+msgstr "Язык изменён на: {lang}"
+```
+
+### 4. Compile translations
+
+```bash
+msgfmt app/locales/ru/LC_MESSAGES/messages.po \
+    -o app/locales/ru/LC_MESSAGES/messages.mo
+```
+
+### 5. Add language to the app
+
+Update `main.py` to include the new language:
+
+```python
+self._languages = ["ru", "en", "fr"]
+```
+
 ## Building
 
 ### 1. Build the launcher and assemble dist
