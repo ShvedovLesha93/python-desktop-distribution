@@ -54,6 +54,10 @@ class MainWindow(QMainWindow):
         self.button.clicked.connect(self.on_button_click)
         layout.addWidget(self.button)
 
+        # Greeting label
+        self.greet_label = QLabel()
+        layout.addWidget(self.greet_label)
+
         # Label
         self.label = QLabel("")
         self.label.setAlignment(Qt.AlignmentFlag.AlignCenter)
@@ -102,6 +106,7 @@ class MainWindow(QMainWindow):
         self.label.setText(
             _("Language changed to: {lang}").format(lang=self._current_lang)
         )
+        self.greet_label.setText(_("Hello World!"))
         self.button.setText(_("Change language"))
         self.help_menu.setTitle(_("Help"))
         self.upd_checker_action.setText(_("Check for updates"))
