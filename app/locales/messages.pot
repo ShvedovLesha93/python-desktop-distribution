@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-03-03 12:59+0300\n"
+"POT-Creation-Date: 2026-03-03 15:24+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -35,19 +35,23 @@ msgstr ""
 msgid "Update check failed: {error_msg}"
 msgstr ""
 
-#: main.py:103
+#: main.py:107
 #, python-brace-format
 msgid "Language changed to: {lang}"
 msgstr ""
 
-#: main.py:105
+#: main.py:109
+msgid "Hello World!"
+msgstr ""
+
+#: main.py:110
 msgid "Change language"
 msgstr ""
 
-#: main.py:106
+#: main.py:111
 msgid "Help"
 msgstr ""
 
-#: main.py:107
+#: main.py:112
 msgid "Check for updates"
 msgstr ""
