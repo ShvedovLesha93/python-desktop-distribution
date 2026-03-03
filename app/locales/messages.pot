@@ -8,20 +8,46 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-02-11 11:40+0300\n"
+"POT-Creation-Date: 2026-03-03 12:59+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: main.py:39
+#: app/update_checker.py:33
+msgid "No version found in response"
+msgstr ""
+
+#: app/update_checker.py:79
+#, python-brace-format
+msgid "Update available: {current} → {latest}"
+msgstr ""
+
+#: app/update_checker.py:85
+msgid "You're up to date!"
+msgstr ""
+
+#: app/update_checker.py:89
+#, python-brace-format
+msgid "Update check failed: {error_msg}"
+msgstr ""
+
+#: main.py:103
+#, python-brace-format
+msgid "Language changed to: {lang}"
+msgstr ""
+
+#: main.py:105
 msgid "Change language"
 msgstr ""
 
-#: main.py:56
-#, python-brace-format
-msgid "Language changed to: {lang}"
+#: main.py:106
+msgid "Help"
+msgstr ""
+
+#: main.py:107
+msgid "Check for updates"
 msgstr ""

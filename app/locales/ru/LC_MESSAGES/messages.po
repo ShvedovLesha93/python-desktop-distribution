@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-02-11 11:40+0300\n"
+"POT-Creation-Date: 2026-03-03 12:59+0300\n"
 "PO-Revision-Date: 2026-02-11 11:53+0300\n"
 "Last-Translator: <EMAIL@ADDRESS>\n"
 "Language-Team: Language =ru\n"
@@ -16,11 +16,37 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: main.py:39
-msgid "Change language"
-msgstr "Изменить язык"
+#: app/update_checker.py:33
+msgid "No version found in response"
+msgstr "Версия не найдена в ответе"
 
-#: main.py:56
+#: app/update_checker.py:79
+#, python-brace-format
+msgid "Update available: {current} → {latest}"
+msgstr "Обновление доступно: {current} → {latest}"
+
+#: app/update_checker.py:85
+msgid "You're up to date!"
+msgstr "У вас установлена последняя версия."
+
+#: app/update_checker.py:89
+#, python-brace-format
+msgid "Update check failed: {error_msg}"
+msgstr "Ошибка проверки обновлений: {error_msg}"
+
+#: main.py:103
 #, python-brace-format
 msgid "Language changed to: {lang}"
 msgstr "Язык изменен на: {lang}"
+
+#: main.py:105
+msgid "Change language"
+msgstr "Изменить язык"
+
+#: main.py:106
+msgid "Help"
+msgstr "Помощь"
+
+#: main.py:107
+msgid "Check for updates"
+msgstr "Проверка обновлений"
