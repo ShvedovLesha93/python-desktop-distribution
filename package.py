@@ -6,7 +6,9 @@ import tarfile
 
 def create_archive() -> None:
     if platform.system() == "Linux":
-        archive_path = Path("release") / "MyApp.tar.gz"
+        release_path = Path("release")
+        release_path.mkdir(exist_ok=True)
+        archive_path = release_path / "MyApp.tar.gz"
         with tarfile.open(archive_path, "w:gz") as tar:
             tar.add("dist", arcname="MyApp")
         print(f"Archive created: {archive_path}")
