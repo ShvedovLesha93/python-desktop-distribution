@@ -10,13 +10,15 @@ from PySide6.QtWidgets import (
 )
 from PySide6.QtCore import QTimer, Qt
 
-import logging
 
+from app.logger import configure_logging
 from app.update_checker import UpdateChecker
+import updater
 
-logging.basicConfig(level=logging.DEBUG)
 
 from app.translator import language_manager, _
+
+configure_logging()
 
 
 class MainWindow(QMainWindow):
@@ -39,6 +41,8 @@ class MainWindow(QMainWindow):
 
     def _connect_signals(self) -> None:
         self.update_cheker.message.connect(self.set_status_msg)
+        self.button.clicked.connect(self.on_button_click)
+        self.update_btn.clicked.connect(updater.run)
 
     def _setup_ui(self) -> None:
         self.setWindowTitle("Click Me Demo")
@@ -51,7 +55,6 @@ class MainWindow(QMainWindow):
 
         # Button
         self.button = QPushButton()
-        self.button.clicked.connect(self.on_button_click)
         layout.addWidget(self.button)
 
         # Greeting label
@@ -62,6 +65,10 @@ class MainWindow(QMainWindow):
         self.label = QLabel("")
         self.label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         layout.addWidget(self.label)
+
+        # Update btn
+        self.update_btn = QPushButton()
+        layout.addWidget(self.update_btn)
 
         # Timer for hiding the message
         self.hide_label = QTimer()
@@ -110,6 +117,7 @@ class MainWindow(QMainWindow):
         self.button.setText(_("Change language"))
         self.help_menu.setTitle(_("Help"))
         self.upd_checker_action.setText(_("Check for updates"))
+        self.update_btn.setText(_("Update app"))
 
 
 def main() -> None:

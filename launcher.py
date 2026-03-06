@@ -9,22 +9,20 @@ import zipfile
 from pathlib import Path
 
 import os
-from rich.logging import RichHandler
 
-APP_DIR = Path(sys.executable).resolve().parent
+from app.logger import configure_logging
+
+configure_logging(file_log_name="launcher")
+
+if getattr(sys, "frozen", False):
+    APP_DIR = Path(sys.executable).resolve().parent
+else:
+    APP_DIR = Path(__file__).resolve().parent
+
 VENV = APP_DIR / ".venv"
 
 LOG_FILE = APP_DIR / "launcher.log"
 
-logging.basicConfig(
-    level=logging.DEBUG,
-    format="%(message)s",
-    datefmt="[%X]",
-    handlers=[
-        RichHandler(rich_tracebacks=True),
-        logging.FileHandler(LOG_FILE, mode="w", encoding="utf-8"),
-    ],
-)
 log = logging.getLogger("launcher")
 
 log.debug(f"DISPLAY: {os.environ.get('DISPLAY', 'NOT SET')}")
@@ -134,19 +132,25 @@ def main():
         log_paths()
         bootstrap()
         log_paths()
+
+        has_terminal = sys.stdout and sys.stdout.isatty()
+
         log.info(f"Launching app: {PYTHON} {APP_DIR / 'main.py'}")
         result = subprocess.run(
-            [PYTHON, APP_DIR / "main.py"], capture_output=True, text=True
+            [PYTHON, APP_DIR / "main.py"],
+            capture_output=not has_terminal,  # перехватываем только без терминала
+            text=not has_terminal,
         )
         if result.returncode != 0:
             log.error(f"App exited with error code: {result.returncode}")
-            log.error(f"stdout:\n{result.stdout}")
-            log.error(f"stderr:\n{result.stderr}")
+            if not has_terminal:
+                log.error(f"stdout:\n{result.stdout}")
+                log.error(f"stderr:\n{result.stderr}")
             wait_for_user()
             sys.exit(result.returncode)
     except Exception as e:
         log.exception(f"Launcher error: {e}")
-        input("\nPress Enter to close...")
+        wait_for_user()
         sys.exit(1)
 
 
